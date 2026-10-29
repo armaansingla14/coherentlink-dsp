@@ -1,0 +1,13 @@
+[project]
+name = "coherentlink"
+version = "0.1.0"
+description = "Coherent optical modem DSP chain and ASIC register-interface model"
+requires-python = ">=3.10"
+dependencies = ["numpy", "scipy"]
+
+[tool.setuptools.packages.find]
+where = ["python"]
+
+[tool.pytest.ini_options]
+pythonpath = ["python"]
+testpaths = ["python/tests"]
