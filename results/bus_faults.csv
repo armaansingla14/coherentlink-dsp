@@ -1,0 +1,5 @@
+bit_error_rate,drop_rate,write_read_pairs,completed,bus_errors,data_mismatches,retries,retries_per_transaction,frames_corrupted,frames_dropped
+0,0,2000,2000,0,0,0,0,0,0
+0.0001,0,2000,2000,0,0,53,0.01325,54,0
+0.001,0.01,2000,1999,1,0,579,0.144786,571,26
+0.003,0.05,2000,1979,21,0,2218,0.55589,2096,313
