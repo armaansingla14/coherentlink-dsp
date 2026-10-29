@@ -69,9 +69,13 @@ def receive(rx: np.ndarray, p: channel.LinkParams, const: Constellation, cfg: Rx
 
 
 def simulate_frame(p: channel.LinkParams, fmt: str, n_symbols: int, cfg: RxConfig,
-                   rng: np.random.Generator, code=None, interleaver_seed: int = 7) -> FrameResult:
+                   rng: np.random.Generator, code=None, interleaver_seed: int = 7,
+                   rx_params: channel.LinkParams | None = None) -> FrameResult:
     """Simulate one frame. With ``code`` the payload is FEC-encoded and the
-    returned error count is post-FEC (information bits only)."""
+    post-FEC counts refer to information bits.
+
+    ``rx_params`` lets the receiver assume different link parameters from the
+    real channel (e.g. a mis-configured dispersion value for the CDC)."""
     const = FORMATS[fmt]
     bps = const.bits_per_symbol
     taps = pulse.rrc_taps(p.rrc_beta, p.sps, 64)
@@ -92,7 +96,7 @@ def simulate_frame(p: channel.LinkParams, fmt: str, n_symbols: int, cfg: RxConfi
     snr_db = float(osnr_to_snr_db(p.osnr_db, p.symbol_rate))
     rx = channel.transmit(wave, p, snr_db, rng, cd=True)
 
-    s, f_est, tau = receive(rx, p, const, cfg, syms[g - cfg.preamble: g], taps)
+    s, f_est, tau = receive(rx, rx_params or p, const, cfg, syms[g - cfg.preamble: g], taps)
     rx_bits = const.demap(s)
     sl = slice(g * bps, g * bps + payload_bits)
     pre = int(np.count_nonzero(rx_bits[sl] != tx_bits[sl]))
